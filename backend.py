@@ -13,6 +13,89 @@ db_config = {
     'password': 'root'
 }
 
+# Endpoint to add new users to user table
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        data = request.get_json()
+        userid = data.get('userid')
+        username = data.get('username')
+        useremail = data.get('useremail')
+
+        query = "INSERT INTO user (userid, useremail, username) VALUES (%s, %s, %s)"
+        cursor.execute(query, (userid, useremail, username))
+        connection.commit()
+
+        return jsonify(message='User added successfully')
+    except Exception as e:
+        return jsonify(error=str(e))
+    finally:
+        cursor.close()
+        connection.close()
+
+# Endpoint to add new favourites to favourite table
+@app.route('/add_favourite', methods=['POST'])
+def add_favourite():
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        data = request.get_json()
+        userid = data.get('userid')
+        firm = data.get('firm')
+
+        query = "INSERT INTO favourite (userid, firm) VALUES (%s, %s)"
+        cursor.execute(query, (userid, firm))
+        connection.commit()
+
+        return jsonify(message='favourite added successfully')
+    except Exception as e:
+        return jsonify(error=str(e))
+    finally:
+        cursor.close()
+        connection.close()
+
+# Endpoint to retrieve favourites data from favourites table
+@app.route('/get_favourites', methods=['GET'])
+def get_favourites():
+    userid = request.args.get('userid')
+    if userid is None:
+        return jsonify(error="Userid parameter is required.")
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM favourite WHERE userid = %s"
+        cursor.execute(query, (userid,))
+        favouritedata = cursor.fetchall()
+        return jsonify(favouritedata)
+    except Exception as e:
+        return jsonify(error=str(e))
+    finally:
+        cursor.close()
+        connection.close()
+
+# Endpoint to retrieve user data from user table
+@app.route('/get_user', methods=['GET'])
+def get_user():
+    userid = request.args.get('userid')
+    if userid is None:
+        return jsonify(error="Userid parameter is required.")
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM user WHERE userid = %s"
+        cursor.execute(query, (userid,))
+        userdata = cursor.fetchall()
+        return jsonify(userdata)
+    except Exception as e:
+        return jsonify(error=str(e))
+    finally:
+        cursor.close()
+        connection.close()
+
 # Endpoint to retrieve all available firm names from firm_sentiment_details table
 @app.route('/firm_names', methods=['GET'])
 def get_firm_names():

@@ -56,3 +56,16 @@ CREATE TABLE reviews (
     cons TEXT,
     year int
 );
+
+CREATE TABLE user (
+    userid VARCHAR(255) PRIMARY KEY,
+    useremail VARCHAR(255),
+    username VARCHAR(255)
+);
+
+CREATE TABLE favourite (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userid VARCHAR(255),
+    firm VARCHAR(255),
+    UNIQUE KEY unique_user_firm (userid, firm)
+)
