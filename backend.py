@@ -189,7 +189,7 @@ def get_title_count():
         connection.close()
 
 # Endpoint to retrieve average values for firm details and sentiment, sorted by selected average values in descending order
-@app.route('/sorted_firm_averages', methods=['GET'])
+@app.route('/sorted_firm_averages', methods=['POST'])
 def get_sorted_firm_averages():
     try:
         connection = mysql.connector.connect(**db_config)
@@ -204,7 +204,7 @@ def get_sorted_firm_averages():
         include_senior_mgmt = data.get('senior_mgmt')
         include_recommend = data.get('recommend')
         include_ceo_approv = data.get('ceo_approv')
-        include_predicted_sentiments = data.get('predicted_sentiments')
+        include_predicted_sentiments = data.get('review_rating')
         
         select_fields = []
         if include_work_life_balance:
@@ -258,7 +258,7 @@ def get_sorted_firm_averages():
                     for firm_sentiment in firm_sentiment_details:
                         if firm_sentiment['firm'] == firm_name:
                             firm_data[firm_name]['predicted_sentiments'] = firm_sentiment['Predicted_sentiments']/2
-                            
+
         firm_averages = {}
         for firm in firm_data:
             firm_averages[firm] = {}
@@ -267,7 +267,6 @@ def get_sorted_firm_averages():
                 average = average + firm_data[firm][field]
             average = average / len(firm_data[firm])
             firm_averages[firm] = average
-
 
         sorted_firm_averages = sorted(firm_averages.items(), key=lambda x: x[1], reverse=True)
         return jsonify(sorted_firm_averages)
