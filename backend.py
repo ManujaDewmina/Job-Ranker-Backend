@@ -188,6 +188,95 @@ def get_title_count():
         cursor.close()
         connection.close()
 
+# Endpoint to retrieve average values for firm details and sentiment, sorted by selected average values in descending order
+@app.route('/sorted_firm_averages', methods=['GET'])
+def get_sorted_firm_averages():
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+
+        data = request.get_json()
+        include_work_life_balance = data.get('work_life_balance')
+        include_culture_values = data.get('culture_values')
+        include_diversity_inclusion = data.get('diversity_inclusion')
+        include_career_opp = data.get('career_opp')
+        include_comp_benefits = data.get('comp_benefits')
+        include_senior_mgmt = data.get('senior_mgmt')
+        include_recommend = data.get('recommend')
+        include_ceo_approv = data.get('ceo_approv')
+        include_predicted_sentiments = data.get('predicted_sentiments')
+        
+        select_fields = []
+        if include_work_life_balance:
+            select_fields.append('work_life_balance')
+        if include_culture_values:
+            select_fields.append('culture_values')
+        if include_diversity_inclusion:
+            select_fields.append('diversity_inclusion')
+        if include_career_opp:
+            select_fields.append('career_opp')
+        if include_comp_benefits:
+            select_fields.append('comp_benefits')
+        if include_senior_mgmt:
+            select_fields.append('senior_mgmt')
+        if include_recommend:
+            select_fields.append('recommend')
+        if include_ceo_approv:
+            select_fields.append('ceo_approv')
+
+        if include_predicted_sentiments:
+            query_1 = "SELECT firm, Predicted_sentiments FROM firm_sentiment_details"
+            cursor.execute(query_1)
+            firm_sentiment_details = cursor.fetchall()
+
+        if len(select_fields) != 0:
+            if len(select_fields) == 1:
+                select_statement = select_fields[0]
+                query_2 = f"SELECT firm_name, {select_statement} FROM firm_details"
+            else:
+                select_statement = ", ".join(select_fields)
+                query_2 = f"SELECT firm_name, {select_statement} FROM firm_details"
+            cursor.execute(query_2)
+            firm_details = cursor.fetchall()
+
+        firm_data = {}
+
+        if len(select_fields) == 0:
+            if include_predicted_sentiments:
+                for firm_sentiment in firm_sentiment_details:
+                    firm_name = firm_sentiment['firm']
+                    firm_data[firm_name] = {}
+                    firm_data[firm_name]['predicted_sentiments'] = firm_sentiment['Predicted_sentiments']/2
+        else:
+            for firm in firm_details:
+                firm_name = firm['firm_name']
+                firm_data[firm_name] = {}
+                for field in select_fields:
+                    firm_data[firm_name][field] = firm[field]
+                
+                if include_predicted_sentiments:
+                    for firm_sentiment in firm_sentiment_details:
+                        if firm_sentiment['firm'] == firm_name:
+                            firm_data[firm_name]['predicted_sentiments'] = firm_sentiment['Predicted_sentiments']/2
+                            
+        firm_averages = {}
+        for firm in firm_data:
+            firm_averages[firm] = {}
+            average = 0
+            for field in firm_data[firm]:
+                average = average + firm_data[firm][field]
+            average = average / len(firm_data[firm])
+            firm_averages[firm] = average
+
+
+        sorted_firm_averages = sorted(firm_averages.items(), key=lambda x: x[1], reverse=True)
+        return jsonify(sorted_firm_averages)
+    except Exception as e:
+        return jsonify(error=str(e))
+    finally:
+        cursor.close()
+        connection.close()
+
 @app.route('/store_firm_review', methods=['POST'])
 def store_firm_sentiment():
     try:
