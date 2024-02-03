@@ -1,4 +1,4 @@
--- Active: 1698075927025@@127.0.0.1@3306@dm_project
+
 CREATE TABLE firm_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firm_name VARCHAR(255),
