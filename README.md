@@ -3,9 +3,9 @@
     <img src="https://github.com/ManujaDewmina/JobRanker-frontend/assets/92631934/105316f1-57d5-4492-bbee-6d78f26eac8b" width="150" align="center">
 </div>
 
-Job Ranker Frontend Repository : https://github.com/ManujaDewmina/Job-Ranker-Frontend
+Job Ranker Frontend : https://github.com/ManujaDewmina/Job-Ranker-Frontend
 
-Job Ranker Backend Repository : https://github.com/ManujaDewmina/Job-Ranker-Backend
+Job Ranker Backend : https://github.com/ManujaDewmina/Job-Ranker-Backend
 
 ## Overview
 This project is a job ranker system that uses sentiment analysis to score job reviews, rank jobs under different categories and classify ranked jobs according to user preferences. The system is designed to help job seekers find the best jobs that match their interests and requirements, and to help employers get feedback on their jobs and identify areas for improvement. 
