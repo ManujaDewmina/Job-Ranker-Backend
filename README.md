@@ -13,6 +13,11 @@ The evaluation of the system is conducted on the Glassdoor job reviews data set,
 Furthermore, the use of MySQL for complex database management of review data enables the storage and management of large amounts of data, ensuring reliable and accurate results for the system. The application backend follows a RESTful API
 design pattern, providing a set of operations to interact with the underlying MySQL database and LSTM model.
 
+## Video Demonstration
+<div align='center'>
+<video src="https://github.com/ManujaDewmina/Job-Ranker-backend/assets/92631934/1e3f428f-da3f-442c-90ff-c4dc0fd661b7">
+</div>
+
 ## Objectives
   - Rate job reviews based on sentiment analysis and rank jobs under different categories. This will help job seekers to quickly identify the best jobs in a particular category.
   - Classify ranked jobs according to user preferences. This will help job seekers to find jobs that match their interests and requirements.
